@@ -4,6 +4,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -83,13 +84,14 @@ func (bk *Blockchain) createGenesisBlock() {
 		Timestamp:   time.Now().Unix(),
 		Transaction: []Transaction{},
 		Proof:       10,
-		PrevHash:    "0",
+		PrevHash:    "prokofiev",
 	}
 	genesisBlock.Hash = HashGenerate(genesisBlock)
 	bk.Chain = append(bk.Chain, genesisBlock)
 }
 
 func validNonce(lastblock Block, proof int, transaction []Transaction, candidateTime int64) bool {
+
 	tempBlock := Block{
 		Index:       lastblock.Index,
 		Timestamp:   lastblock.Timestamp,
@@ -98,8 +100,12 @@ func validNonce(lastblock Block, proof int, transaction []Transaction, candidate
 		PrevHash:    lastblock.PrevHash,
 	}
 	hash := HashGenerate(tempBlock)
+
 	fmt.Printf("%s", hash)
-	return hash[:4] == "0000"
+
+	monthSuffix := "10"
+	return hash[:4] == "0000" &&
+		strings.HasSuffix(hash, monthSuffix)
 
 }
 
